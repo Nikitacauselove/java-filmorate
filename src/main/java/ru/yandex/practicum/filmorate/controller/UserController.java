@@ -1,11 +1,13 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.model.ValidationException;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,8 +17,7 @@ import java.util.List;
 @Slf4j
 public class UserController {
     private final HashMap<Integer, User> users = new HashMap<>();
-
-    private static int userCounter = 0;
+    private int userCounter = 0;
 
     private int getUserId() {
         return ++userCounter;
@@ -28,23 +29,23 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> add(@RequestBody User user) throws ValidationException {
+    public ResponseEntity<User> create(@Valid @RequestBody User user) throws ResponseStatusException {
         if (user.isValid()) {
             user.setId(getUserId());
             users.put(user.getId(), user);
-            return ResponseEntity.ok(user);
-        } else {
-            return ResponseEntity.internalServerError().build();
         }
+        return ResponseEntity.ok(user);
     }
 
     @PutMapping
-    public ResponseEntity<User> update(@RequestBody User user) throws ValidationException {
-        if (user.isValid() && users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
-            return ResponseEntity.ok(user);
-        } else {
-            return ResponseEntity.internalServerError().body(user);
+    public ResponseEntity<User> update(@Valid @RequestBody User user) throws ResponseStatusException {
+        if (user.isValid()) {
+            if (users.containsKey(user.getId())) {
+                users.put(user.getId(), user);
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь с указанным идентификатором не найден.");
+            }
         }
+        return ResponseEntity.ok(user);
     }
 }

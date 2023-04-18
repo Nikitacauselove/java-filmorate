@@ -1,11 +1,13 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.ValidationException;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,8 +17,7 @@ import java.util.List;
 @Slf4j
 public class FilmController {
     private final HashMap<Integer, Film> films = new HashMap<>();
-
-    private static int filmCounter = 0;
+    private int filmCounter = 0;
 
     private int getUserId() {
         return ++filmCounter;
@@ -28,23 +29,23 @@ public class FilmController {
     }
 
     @PostMapping
-    public ResponseEntity<Film> add(@RequestBody Film film) throws ValidationException {
+    public ResponseEntity<Film> create(@Valid @RequestBody Film film) throws ResponseStatusException {
         if (film.isValid()) {
             film.setId(getUserId());
             films.put(film.getId(), film);
-            return ResponseEntity.ok(film);
-        } else {
-            return ResponseEntity.internalServerError().build();
         }
+        return ResponseEntity.ok(film);
     }
 
     @PutMapping
-    public ResponseEntity<Film> update(@RequestBody Film film) throws ValidationException {
-        if (film.isValid() && films.containsKey(film.getId())) {
-            films.put(film.getId(), film);
-            return ResponseEntity.ok(film);
-        } else {
-            return ResponseEntity.internalServerError().body(film);
+    public ResponseEntity<Film> update(@Valid @RequestBody Film film) throws ResponseStatusException {
+        if (film.isValid()) {
+            if (films.containsKey(film.getId())) {
+                films.put(film.getId(), film);
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Фильм с указанным идентификатором не найден.");
+            }
         }
+        return ResponseEntity.ok(film);
     }
 }
