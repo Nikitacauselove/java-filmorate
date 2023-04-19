@@ -1,51 +1,38 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("films")
 @Slf4j
 public class FilmController {
-    private final HashMap<Integer, Film> films = new HashMap<>();
-    private int filmCounter = 0;
+    private final FilmStorage filmStorage;
 
-    private int getUserId() {
-        return ++filmCounter;
+    @Autowired
+    public FilmController(FilmStorage filmStorage) {
+        this.filmStorage = filmStorage;
     }
 
     @GetMapping
-    public List<Film> getAllUsers() {
-        return new ArrayList<>(films.values());
+    public Collection<Film> FindAll() {
+        return filmStorage.findAll();
     }
 
     @PostMapping
-    public ResponseEntity<Film> create(@Valid @RequestBody Film film) throws ResponseStatusException {
-        if (film.isValid()) {
-            film.setId(getUserId());
-            films.put(film.getId(), film);
-        }
-        return ResponseEntity.ok(film);
+    public ResponseEntity<Film> createFilm(@Valid @RequestBody Film film) {
+        return ResponseEntity.ok(filmStorage.createFilm(film));
     }
 
     @PutMapping
-    public ResponseEntity<Film> update(@Valid @RequestBody Film film) throws ResponseStatusException {
-        if (film.isValid()) {
-            if (films.containsKey(film.getId())) {
-                films.put(film.getId(), film);
-            } else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Фильм с указанным идентификатором не найден.");
-            }
-        }
-        return ResponseEntity.ok(film);
+    public ResponseEntity<Film> updateFilm(@Valid @RequestBody Film film) {
+        return ResponseEntity.ok(filmStorage.updateFilm(film));
     }
 }
