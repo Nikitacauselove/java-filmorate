@@ -6,6 +6,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class Film {
@@ -18,10 +20,11 @@ public class Film {
     private final LocalDate releaseDate;
     @NotNull
     private final int duration;
+    private final Set<Integer> likingUsers = new HashSet<>();
 
     private static final LocalDate DATE_OF_FIRST_FILM = LocalDate.of(1895, 12, 28);
 
-    public boolean isValid() throws ResponseStatusException {
+    public boolean isValid() {
         if (name.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Название не может быть пустым.");
         }

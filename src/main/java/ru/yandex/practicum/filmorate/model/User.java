@@ -6,6 +6,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class User {
@@ -17,15 +19,20 @@ public class User {
     private final String name;
     @NotNull
     private final LocalDate birthday;
+    private final Set<Integer> friends = new HashSet<>();
 
-    public User(final String email, final String login, final LocalDate birthday) {
+    public User(final String email, final String login, final String name, final LocalDate birthday) {
         this.email = email;
         this.login = login;
-        this.name = login;
+        if (name == null || name.isEmpty()) {
+            this.name = login;
+        } else {
+            this.name = name;
+        }
         this.birthday = birthday;
     }
 
-    public boolean isValid() throws ResponseStatusException {
+    public boolean isValid() {
         if (!email.contains("@") || email.contains(" ")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Электронная почта не может быть пустой и должна содержать символ @.");
         }
