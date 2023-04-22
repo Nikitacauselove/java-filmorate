@@ -1,9 +1,8 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.ValidationException;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -34,13 +33,13 @@ public class User {
 
     public boolean isValid() {
         if (!email.contains("@") || email.contains(" ")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Электронная почта не может быть пустой и должна содержать символ @.");
+            throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ @.");
         }
         if (login.contains(" ")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Логин не может быть пустым и содержать пробелы.");
+            throw new ValidationException("Логин не может быть пустым и содержать пробелы.");
         }
         if (birthday.isAfter(LocalDate.now())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Дата рождения не может быть в будущем.");
+            throw new ValidationException("Дата рождения не может быть в будущем.");
         }
         return true;
     }
