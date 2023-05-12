@@ -14,7 +14,7 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Integer, User> users = new HashMap<>();
     private int userCounter = 0;
 
-    private int getNewUserId() {
+    private int getNextId() {
         return ++userCounter;
     }
 
@@ -24,7 +24,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     public User createUser(User user) {
         if (user.isValid()) {
-            user.setId(getNewUserId());
+            user.setId(getNextId());
             users.put(user.getId(), user);
         }
         return user;
@@ -39,5 +39,13 @@ public class InMemoryUserStorage implements UserStorage {
             }
         }
         return user;
+    }
+
+    public User findUserById(int id) {
+        if (users.containsKey(id)) {
+            return users.get(id);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь с указанным идентификатором не найден.");
+        }
     }
 }

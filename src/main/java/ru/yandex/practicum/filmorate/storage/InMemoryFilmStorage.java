@@ -14,7 +14,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Integer, Film> films = new HashMap<>();
     private int filmCounter = 0;
 
-    private int getNewFilmId() {
+    private int getNextId() {
         return ++filmCounter;
     }
 
@@ -24,7 +24,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     public Film createFilm(Film film) {
         if (film.isValid()) {
-            film.setId(getNewFilmId());
+            film.setId(getNextId());
             films.put(film.getId(), film);
         }
         return film;
@@ -39,5 +39,13 @@ public class InMemoryFilmStorage implements FilmStorage {
             }
         }
         return film;
+    }
+
+    public Film findFilmById(int id) {
+        if (films.containsKey(id)) {
+            return films.get(id);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Фильм с указанным идентификатором не найден.");
+        }
     }
 }
