@@ -43,21 +43,22 @@ public class UserDbStorage implements UserStorage {
     }
 
     public User findUserById(int id) {
+        User user = userDao.findUserById(id);
+
+        user.setFriends(friendshipDao.getFriends(id));
         return userDao.findUserById(id);
     }
 
     public void addFriend(int id, int friendId) {
         User friend = findUserById(friendId);
 
-        friendshipDao.addFriend(id, friendId);
-        friend.getFriends().add(id);
+        friendshipDao.addFriend(id, friend.getId());
     }
 
     public void deleteFriend(int id, int friendId) {
         User user = findUserById(id);
 
-        friendshipDao.deleteFriend(id, friendId);
-        user.getFriends().remove(friendId);
+        friendshipDao.deleteFriend(user.getId(), friendId);
     }
 
     public Collection<User> findAllFriends(int id) {

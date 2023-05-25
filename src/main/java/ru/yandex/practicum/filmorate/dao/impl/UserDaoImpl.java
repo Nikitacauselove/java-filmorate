@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-import ru.yandex.practicum.filmorate.dao.FriendshipDao;
 import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -15,11 +14,9 @@ import java.util.stream.Collectors;
 
 @Component
 public class UserDaoImpl implements UserDao {
-    private final FriendshipDao friendshipDao;
     private final JdbcTemplate jdbcTemplate;
 
-    public UserDaoImpl(FriendshipDao friendshipDao, JdbcTemplate jdbcTemplate) {
-        this.friendshipDao = friendshipDao;
+    public UserDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -54,8 +51,8 @@ public class UserDaoImpl implements UserDao {
 
         if (rs.next()) {
             User user = new User(rs.getString("email"), rs.getString("login"), rs.getString("name"), rs.getDate("birthday").toLocalDate());
+
             user.setId(id);
-            user.setFriends(friendshipDao.getFriends(id));
             return user;
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь с указанным идентификатором не найден.");

@@ -2,13 +2,13 @@ package ru.yandex.practicum.filmorate.dao;
 
 import ru.yandex.practicum.filmorate.model.Genre;
 
-import java.util.List;
+import java.util.TreeSet;
 
 public interface FilmGenreDao {
 
-    void addGenres(int filmId, List<Genre> genres);
+    void addGenres(int filmId, TreeSet<Genre> genres);
 
-    void updateGenres(int filmId, List<Genre> genres);
+    void updateGenres(int filmId, TreeSet<Genre> genres);
 
-    List<Genre> getGenres(int filmId);
+    TreeSet<Genre> getGenres(int filmId);
 }

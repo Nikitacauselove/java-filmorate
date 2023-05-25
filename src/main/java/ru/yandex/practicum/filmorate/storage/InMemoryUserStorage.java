@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component
+@Component("inMemoryUserStorage")
 public class InMemoryUserStorage implements UserStorage {
     private final Map<Integer, User> users = new HashMap<>();
     private int userCounter = 0;
@@ -51,15 +51,19 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     public void addFriend(int id, int friendId) {
+        User user = findUserById(id);
         User friend = findUserById(friendId);
 
+        user.getFriends().add(friendId);
         friend.getFriends().add(id);
     }
 
     public void deleteFriend(int id, int friendId) {
         User user = findUserById(id);
+        User friend = findUserById(friendId);
 
         user.getFriends().remove(friendId);
+        friend.getFriends().remove(id);
     }
 
     public Collection<User> findAllFriends(int id) {
