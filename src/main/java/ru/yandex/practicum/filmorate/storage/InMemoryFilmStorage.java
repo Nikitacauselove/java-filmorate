@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
@@ -46,6 +47,23 @@ public class InMemoryFilmStorage implements FilmStorage {
             return films.get(id);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Фильм с указанным идентификатором не найден.");
+        }
+    }
+
+    public void addLike(int id, int userId) {
+        Film film = findFilmById(id);
+
+        film.getLikingUsers().add(userId);
+    }
+
+    public void deleteLike(int id, int userId) {
+        Film film = findFilmById(id);
+        Set<Integer> likingUsers = film.getLikingUsers();
+
+        if (likingUsers.contains(userId)) {
+            likingUsers.remove(userId);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь с указанным идентификатором не найден.");
         }
     }
 }

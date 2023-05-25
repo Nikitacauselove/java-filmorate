@@ -1,69 +1,67 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
+import ru.yandex.practicum.filmorate.dao.FriendshipDao;
+import ru.yandex.practicum.filmorate.dao.UserDao;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-@Component
-public class InMemoryUserStorage implements UserStorage {
-    private final Map<Integer, User> users = new HashMap<>();
+@Component("userDbStorage")
+public class UserDbStorage implements UserStorage {
+    private final FriendshipDao friendshipDao;
+    private final UserDao userDao;
     private int userCounter = 0;
+
+    public UserDbStorage(FriendshipDao friendshipDao, UserDao userDao) {
+        this.friendshipDao = friendshipDao;
+        this.userDao = userDao;
+    }
 
     private int getNextId() {
         return ++userCounter;
     }
 
     public Collection<User> findAll() {
-        return users.values();
+        return userDao.findAll();
     }
 
     public User createUser(User user) {
         if (user.isValid()) {
             user.setId(getNextId());
-            users.put(user.getId(), user);
+            userDao.createUser(user);
         }
         return user;
     }
 
     public User updateUser(User user) {
         if (user.isValid()) {
-            if (users.containsKey(user.getId())) {
-                users.put(user.getId(), user);
-            } else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь с указанным идентификатором не найден.");
-            }
+            userDao.updateUser(user);
         }
         return user;
     }
 
     public User findUserById(int id) {
-        if (users.containsKey(id)) {
-            return users.get(id);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь с указанным идентификатором не найден.");
-        }
+        return userDao.findUserById(id);
     }
 
     public void addFriend(int id, int friendId) {
         User friend = findUserById(friendId);
 
+        friendshipDao.addFriend(id, friendId);
         friend.getFriends().add(id);
     }
 
     public void deleteFriend(int id, int friendId) {
         User user = findUserById(id);
 
+        friendshipDao.deleteFriend(id, friendId);
         user.getFriends().remove(friendId);
     }
 
     public Collection<User> findAllFriends(int id) {
-        return findUserById(id).getFriends()
+        return friendshipDao.getFriends(id)
                 .stream()
                 .map(this::findUserById)
                 .collect(Collectors.toList());

@@ -1,15 +1,13 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,7 +16,7 @@ public class FilmService {
     private static final Comparator<Film> FILM_COMPARATOR = Comparator.comparing(film -> film.getLikingUsers().size());
 
     @Autowired
-    public FilmService(FilmStorage filmStorage) {
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage) {
         this.filmStorage = filmStorage;
     }
 
@@ -39,20 +37,11 @@ public class FilmService {
     }
 
     public void addLike(int id, int userId) {
-        Film film = filmStorage.findFilmById(id);
-
-        film.getLikingUsers().add(userId);
+        filmStorage.addLike(id, userId);
     }
 
     public void deleteLike(int id, int userId) {
-        Film film = filmStorage.findFilmById(id);
-        Set<Integer> likingUsers = film.getLikingUsers();
-
-        if (likingUsers.contains(userId)) {
-            likingUsers.remove(userId);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь с указанным идентификатором не найден.");
-        }
+        filmStorage.deleteLike(id, userId);
     }
 
     public Collection<Film> findPopularFilms(int count) {

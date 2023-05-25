@@ -6,7 +6,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -20,7 +22,10 @@ public class Film {
     private final LocalDate releaseDate;
     @NotNull
     private final int duration;
-    private final Set<Integer> likingUsers = new HashSet<>();
+    private List<Genre> genres = Collections.emptyList();
+    @NotNull
+    private final Mpa mpa;
+    private Set<Integer> likingUsers = new HashSet<>();
 
     private static final LocalDate DATE_OF_FIRST_FILM = LocalDate.of(1895, 12, 28);
 
