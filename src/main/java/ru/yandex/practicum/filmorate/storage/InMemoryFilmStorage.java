@@ -1,7 +1,8 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.Collection;
@@ -34,7 +35,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             if (films.containsKey(film.getId())) {
                 films.put(film.getId(), film);
             } else {
-                throw new FilmNotFoundException();
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Фильм с указанным идентификатором не найден.");
             }
         }
         return film;
@@ -44,7 +45,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         if (films.containsKey(id)) {
             return films.get(id);
         } else {
-            throw new FilmNotFoundException();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Фильм с указанным идентификатором не найден.");
         }
     }
 }
