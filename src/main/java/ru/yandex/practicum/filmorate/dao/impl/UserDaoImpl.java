@@ -20,6 +20,7 @@ public class UserDaoImpl implements UserDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
     public Collection<User> findAll() {
         List<Integer> listOfId = jdbcTemplate.queryForList("select user_id from users", Integer.class);
 
@@ -28,12 +29,14 @@ public class UserDaoImpl implements UserDao {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public void createUser(User user) {
         String sql = "insert into users (user_id, email, login, name, birthday) values (?, ?, ?, ?, ?)";
 
         jdbcTemplate.update(sql, user.getId(), user.getEmail(), user.getLogin(), user.getName(), user.getBirthday());
     }
 
+    @Override
     public void updateUser(User user) {
         SqlRowSet rs = jdbcTemplate.queryForRowSet("select * from users where user_id = ?", user.getId());
 
@@ -46,6 +49,7 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    @Override
     public User findUserById(int id) {
         SqlRowSet rs = jdbcTemplate.queryForRowSet("select * from users where user_id = ?", id);
 

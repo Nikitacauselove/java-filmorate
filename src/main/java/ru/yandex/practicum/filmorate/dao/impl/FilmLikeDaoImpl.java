@@ -19,10 +19,12 @@ public class FilmLikeDaoImpl implements FilmLikeDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
     public void addLike(int filmId, int userId) {
         jdbcTemplate.update("insert into film_like (film_id, user_id) values (?, ?)", filmId, userId);
     }
 
+    @Override
     public void deleteLike(int filmId, int userId) {
         SqlRowSet rs = jdbcTemplate.queryForRowSet("select * from film_like where film_id = ? and user_id = ?", filmId, userId);
 
@@ -33,6 +35,7 @@ public class FilmLikeDaoImpl implements FilmLikeDao {
         }
     }
 
+    @Override
     public Set<Integer> getLikingUsers(int filmId) {
         List<Integer> listOfId = jdbcTemplate.queryForList("select user_id from film_like where film_id = ?", Integer.class, filmId);
 

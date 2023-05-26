@@ -23,10 +23,12 @@ public class FilmDbStorage implements FilmStorage {
         return ++filmCounter;
     }
 
+    @Override
     public Collection<Film> findAll() {
         return filmDao.findAll();
     }
 
+    @Override
     public Film createFilm(Film film) {
         if (film.isValid()) {
             film.setId(getNextId());
@@ -35,6 +37,7 @@ public class FilmDbStorage implements FilmStorage {
         return findFilmById(film.getId());
     }
 
+    @Override
     public Film updateFilm(Film film) {
         if (film.isValid()) {
             filmDao.updateFilm(film);
@@ -42,10 +45,12 @@ public class FilmDbStorage implements FilmStorage {
         return findFilmById(film.getId());
     }
 
+    @Override
     public Film findFilmById(int id) {
         return filmDao.findFilmById(id);
     }
 
+    @Override
     public void addLike(int id, int userId) {
         Film film = findFilmById(id);
 
@@ -53,6 +58,7 @@ public class FilmDbStorage implements FilmStorage {
         film.getLikingUsers().add(userId);
     }
 
+    @Override
     public void deleteLike(int id, int userId) {
         Film film = findFilmById(id);
         Set<Integer> likingUsers = film.getLikingUsers();

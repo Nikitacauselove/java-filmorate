@@ -18,11 +18,15 @@ public class MpaController {
 
     @GetMapping
     public Collection<Mpa> findAll() {
+        log.info("Получен запрос GET /mpa.");
+
         return Arrays.asList(Mpa.values());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Mpa> findMpa(@PathVariable int id) {
+        log.info("Получен запрос GET /mpa/{id}.");
+
         return ResponseEntity.ok(Mpa.findMpa(id));
     }
 }

@@ -23,10 +23,12 @@ public class UserDbStorage implements UserStorage {
         return ++userCounter;
     }
 
+    @Override
     public Collection<User> findAll() {
         return userDao.findAll();
     }
 
+    @Override
     public User createUser(User user) {
         if (user.isValid()) {
             user.setId(getNextId());
@@ -35,6 +37,7 @@ public class UserDbStorage implements UserStorage {
         return user;
     }
 
+    @Override
     public User updateUser(User user) {
         if (user.isValid()) {
             userDao.updateUser(user);
@@ -42,6 +45,7 @@ public class UserDbStorage implements UserStorage {
         return user;
     }
 
+    @Override
     public User findUserById(int id) {
         User user = userDao.findUserById(id);
 
@@ -49,18 +53,21 @@ public class UserDbStorage implements UserStorage {
         return userDao.findUserById(id);
     }
 
+    @Override
     public void addFriend(int id, int friendId) {
         User friend = findUserById(friendId);
 
         friendshipDao.addFriend(id, friend.getId());
     }
 
+    @Override
     public void deleteFriend(int id, int friendId) {
         User user = findUserById(id);
 
         friendshipDao.deleteFriend(user.getId(), friendId);
     }
 
+    @Override
     public Collection<User> findAllFriends(int id) {
         return friendshipDao.getFriends(id)
                 .stream()

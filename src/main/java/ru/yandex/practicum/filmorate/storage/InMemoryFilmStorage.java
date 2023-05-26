@@ -19,10 +19,12 @@ public class InMemoryFilmStorage implements FilmStorage {
         return ++filmCounter;
     }
 
+    @Override
     public Collection<Film> findAll() {
         return films.values();
     }
 
+    @Override
     public Film createFilm(Film film) {
         if (film.isValid()) {
             film.setId(getNextId());
@@ -31,6 +33,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
+    @Override
     public Film updateFilm(Film film) {
         if (film.isValid()) {
             if (films.containsKey(film.getId())) {
@@ -42,6 +45,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
+    @Override
     public Film findFilmById(int id) {
         if (films.containsKey(id)) {
             return films.get(id);
@@ -50,12 +54,14 @@ public class InMemoryFilmStorage implements FilmStorage {
         }
     }
 
+    @Override
     public void addLike(int id, int userId) {
         Film film = findFilmById(id);
 
         film.getLikingUsers().add(userId);
     }
 
+    @Override
     public void deleteLike(int id, int userId) {
         Film film = findFilmById(id);
         Set<Integer> likingUsers = film.getLikingUsers();

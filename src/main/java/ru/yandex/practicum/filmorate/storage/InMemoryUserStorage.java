@@ -19,10 +19,12 @@ public class InMemoryUserStorage implements UserStorage {
         return ++userCounter;
     }
 
+    @Override
     public Collection<User> findAll() {
         return users.values();
     }
 
+    @Override
     public User createUser(User user) {
         if (user.isValid()) {
             user.setId(getNextId());
@@ -31,6 +33,7 @@ public class InMemoryUserStorage implements UserStorage {
         return user;
     }
 
+    @Override
     public User updateUser(User user) {
         if (user.isValid()) {
             if (users.containsKey(user.getId())) {
@@ -42,6 +45,7 @@ public class InMemoryUserStorage implements UserStorage {
         return user;
     }
 
+    @Override
     public User findUserById(int id) {
         if (users.containsKey(id)) {
             return users.get(id);
@@ -50,6 +54,7 @@ public class InMemoryUserStorage implements UserStorage {
         }
     }
 
+    @Override
     public void addFriend(int id, int friendId) {
         User user = findUserById(id);
         User friend = findUserById(friendId);
@@ -58,6 +63,7 @@ public class InMemoryUserStorage implements UserStorage {
         friend.getFriends().add(id);
     }
 
+    @Override
     public void deleteFriend(int id, int friendId) {
         User user = findUserById(id);
         User friend = findUserById(friendId);
@@ -66,6 +72,7 @@ public class InMemoryUserStorage implements UserStorage {
         friend.getFriends().remove(id);
     }
 
+    @Override
     public Collection<User> findAllFriends(int id) {
         return findUserById(id).getFriends()
                 .stream()

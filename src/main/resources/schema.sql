@@ -1,9 +1,15 @@
 drop table friendship if exists;
+
 drop table film_like if exists;
+
 drop table users if exists;
+
 drop table film_genre if exists;
+
 drop table films if exists;
+
 drop table mpa if exists;
+
 drop table genre if exists;
 
 create table if not exists mpa (

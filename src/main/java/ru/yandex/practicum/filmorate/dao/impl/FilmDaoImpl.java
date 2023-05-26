@@ -27,6 +27,7 @@ public class FilmDaoImpl implements FilmDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
     public Collection<Film> findAll() {
         List<Integer> listOfId = jdbcTemplate.queryForList("select film_id from films order by film_id", Integer.class);
 
@@ -35,6 +36,7 @@ public class FilmDaoImpl implements FilmDao {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public void createFilm(Film film) {
         String sql = "insert into films (film_id, name, description, release_date, duration, mpa_id) values (?, ?, ?, ?, ?, ?)";
 
@@ -42,6 +44,7 @@ public class FilmDaoImpl implements FilmDao {
         filmGenreDao.addGenres(film.getId(), film.getGenres());
     }
 
+    @Override
     public void updateFilm(Film film) {
         SqlRowSet rs = jdbcTemplate.queryForRowSet("select * from films where film_id = ?", film.getId());
 
@@ -55,6 +58,7 @@ public class FilmDaoImpl implements FilmDao {
         }
     }
 
+    @Override
     public Film findFilmById(int id) {
         SqlRowSet rs = jdbcTemplate.queryForRowSet("select * from films where film_id = ?", id);
 

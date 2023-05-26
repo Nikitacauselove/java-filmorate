@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.dao.FilmGenreDao;
 import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,8 @@ public class FilmGenreDaoImpl implements FilmGenreDao {
         jdbcTemplate.update("delete from film_genre where film_id = ?", filmId);
     }
 
-    public void addGenres(int filmId, TreeSet<Genre> genres) {
+    @Override
+    public void addGenres(int filmId, Set<Genre> genres) {
         for (Genre genre : genres) {
             SqlRowSet rs = jdbcTemplate.queryForRowSet("select * from film_genre where film_id = ? and genre_id = ?", filmId, genre.getId());
 
@@ -32,12 +34,14 @@ public class FilmGenreDaoImpl implements FilmGenreDao {
         }
     }
 
-    public void updateGenres(int filmId, TreeSet<Genre> genres) {
+    @Override
+    public void updateGenres(int filmId, Set<Genre> genres) {
         deleteGenres(filmId);
         addGenres(filmId, genres);
     }
 
-    public TreeSet<Genre> getGenres(int filmId) {
+    @Override
+    public Set<Genre> getGenres(int filmId) {
         List<Integer> listOfId =  jdbcTemplate.queryForList("select genre_id from film_genre where film_id = ?", Integer.class, filmId);
 
         return listOfId.stream()
