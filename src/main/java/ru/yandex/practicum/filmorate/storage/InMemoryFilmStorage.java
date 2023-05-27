@@ -26,21 +26,17 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film createFilm(Film film) {
-        if (film.isValid()) {
-            film.setId(getNextId());
-            films.put(film.getId(), film);
-        }
+        film.setId(getNextId());
+        films.put(film.getId(), film);
         return film;
     }
 
     @Override
     public Film updateFilm(Film film) {
-        if (film.isValid()) {
-            if (films.containsKey(film.getId())) {
-                films.put(film.getId(), film);
-            } else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Фильм с указанным идентификатором не найден.");
-            }
+        if (films.containsKey(film.getId())) {
+            films.put(film.getId(), film);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Фильм с указанным идентификатором не найден.");
         }
         return film;
     }

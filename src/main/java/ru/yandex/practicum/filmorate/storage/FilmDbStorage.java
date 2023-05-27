@@ -30,18 +30,14 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film createFilm(Film film) {
-        if (film.isValid()) {
-            film.setId(getNextId());
-            filmDao.createFilm(film);
-        }
+        film.setId(getNextId());
+        filmDao.createFilm(film);
         return findFilmById(film.getId());
     }
 
     @Override
     public Film updateFilm(Film film) {
-        if (film.isValid()) {
-            filmDao.updateFilm(film);
-        }
+        filmDao.updateFilm(film);
         return findFilmById(film.getId());
     }
 

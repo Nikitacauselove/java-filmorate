@@ -30,18 +30,14 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User createUser(User user) {
-        if (user.isValid()) {
-            user.setId(getNextId());
-            userDao.createUser(user);
-        }
+        user.setId(getNextId());
+        userDao.createUser(user);
         return user;
     }
 
     @Override
     public User updateUser(User user) {
-        if (user.isValid()) {
-            userDao.updateUser(user);
-        }
+        userDao.updateUser(user);
         return user;
     }
 
