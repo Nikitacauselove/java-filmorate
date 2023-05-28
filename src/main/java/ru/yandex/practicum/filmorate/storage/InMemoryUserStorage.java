@@ -26,17 +26,21 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User createUser(User user) {
-        user.setId(getNextId());
-        users.put(user.getId(), user);
+        if (user.isValid()) {
+            user.setId(getNextId());
+            users.put(user.getId(), user);
+        }
         return user;
     }
 
     @Override
     public User updateUser(User user) {
-        if (users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь с указанным идентификатором не найден.");
+        if (user.isValid()) {
+            if (users.containsKey(user.getId())) {
+                users.put(user.getId(), user);
+            } else {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь с указанным идентификатором не найден.");
+            }
         }
         return user;
     }

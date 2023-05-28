@@ -18,15 +18,11 @@ public class GenresController {
 
     @GetMapping
     public Collection<Genre> findAll() {
-        log.info("Получен запрос GET /genres.");
-
         return Arrays.asList(Genre.values());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Genre> findGenre(@PathVariable int id) {
-        log.info("Получен запрос GET /genres/{id}.");
-
         return ResponseEntity.ok(Genre.findGenre(id));
     }
 }

@@ -25,20 +25,27 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Collection<User> findAll() {
-        return userDao.findAll();
+        Collection<User> collectionOfUsers = userDao.findAll();
+
+        collectionOfUsers.forEach(user -> user.setFriends(friendshipDao.getFriends(user.getId())));
+        return collectionOfUsers;
     }
 
     @Override
     public User createUser(User user) {
-        user.setId(getNextId());
-        userDao.createUser(user);
-        return user;
+        if (user.isValid()) {
+            user.setId(getNextId());
+            userDao.createUser(user);
+        }
+        return findUserById(user.getId());
     }
 
     @Override
     public User updateUser(User user) {
-        userDao.updateUser(user);
-        return user;
+        if (user.isValid()) {
+            userDao.updateUser(user);
+        }
+        return findUserById(user.getId());
     }
 
     @Override
@@ -46,7 +53,7 @@ public class UserDbStorage implements UserStorage {
         User user = userDao.findUserById(id);
 
         user.setFriends(friendshipDao.getFriends(id));
-        return userDao.findUserById(id);
+        return user;
     }
 
     @Override
