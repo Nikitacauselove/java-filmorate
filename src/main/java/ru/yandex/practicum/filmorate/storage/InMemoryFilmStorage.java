@@ -8,8 +8,9 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-@Component
+@Component("inMemoryFilmStorage")
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Integer, Film> films = new HashMap<>();
     private int filmCounter = 0;
@@ -18,10 +19,12 @@ public class InMemoryFilmStorage implements FilmStorage {
         return ++filmCounter;
     }
 
+    @Override
     public Collection<Film> findAll() {
         return films.values();
     }
 
+    @Override
     public Film createFilm(Film film) {
         if (film.isValid()) {
             film.setId(getNextId());
@@ -30,6 +33,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
+    @Override
     public Film updateFilm(Film film) {
         if (film.isValid()) {
             if (films.containsKey(film.getId())) {
@@ -41,11 +45,31 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
+    @Override
     public Film findFilmById(int id) {
         if (films.containsKey(id)) {
             return films.get(id);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Фильм с указанным идентификатором не найден.");
+        }
+    }
+
+    @Override
+    public void addLike(int id, int userId) {
+        Film film = findFilmById(id);
+
+        film.getLikingUsers().add(userId);
+    }
+
+    @Override
+    public void deleteLike(int id, int userId) {
+        Film film = findFilmById(id);
+        Set<Integer> likingUsers = film.getLikingUsers();
+
+        if (likingUsers.contains(userId)) {
+            likingUsers.remove(userId);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь с указанным идентификатором не найден.");
         }
     }
 }

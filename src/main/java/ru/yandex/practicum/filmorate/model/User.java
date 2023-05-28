@@ -19,7 +19,7 @@ public class User {
     private final String name;
     @NotNull
     private final LocalDate birthday;
-    private final Set<Integer> friends = new HashSet<>();
+    private Set<Integer> friends = new HashSet<>();
 
     public User(final String email, final String login, final String name, final LocalDate birthday) {
         this.email = email;

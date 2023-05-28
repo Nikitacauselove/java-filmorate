@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Data
 public class Film {
@@ -20,7 +21,10 @@ public class Film {
     private final LocalDate releaseDate;
     @NotNull
     private final int duration;
-    private final Set<Integer> likingUsers = new HashSet<>();
+    @NotNull
+    private final Mpa mpa;
+    private Set<Genre> genres = new TreeSet<>();
+    private Set<Integer> likingUsers = new HashSet<>();
 
     private static final LocalDate DATE_OF_FIRST_FILM = LocalDate.of(1895, 12, 28);
 
